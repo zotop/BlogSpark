@@ -1,6 +1,8 @@
 package engine.blog.run;
 
 
+import com.mongodb.MongoClient;
+import engine.blog.resource.BlogPostResource;
 import spark.servlet.SparkApplication;
 
 import static spark.Spark.get;
@@ -11,7 +13,6 @@ public class Main implements SparkApplication {
     @Override
     public void init() {
         staticFileLocation("public");
-        get("/hello", (req, res) -> "Hello World");
-        //get("/", (req, res) -> "hi");
+        new BlogPostResource();
     }
 }

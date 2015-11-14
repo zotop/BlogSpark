@@ -15,7 +15,7 @@ public class BlogPost {
     private  String id;
 
     @JsonCreator
-    public BlogPost(@Id String id) {
+    private BlogPost(@Id String id) {
         this.id = id;
     }
 

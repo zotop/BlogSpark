@@ -15,6 +15,12 @@ public class BlogPostsManager {
     public static final String COLLECTION_NAME = "blogposts";
     private JacksonDBCollection<BlogPost, String> blogPostsCollection;
 
+    public BlogPostsManager() {
+        DB db = MongoDBClient.INSTANCE.getDatabase("test");
+        DBCollection collection = db.getCollection(COLLECTION_NAME);
+        this.blogPostsCollection = JacksonDBCollection.wrap(collection, BlogPost.class,
+                String.class);
+    }
 
     public BlogPostsManager(DB db) {
         DBCollection collection = db.getCollection(COLLECTION_NAME);
