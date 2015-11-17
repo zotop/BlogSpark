@@ -12,17 +12,19 @@ import java.util.Optional;
 
 public class BlogPostsManager {
 
-    public static final String COLLECTION_NAME = "blogposts";
+    private static final String COLLECTION_NAME = "blogposts";
     private JacksonDBCollection<BlogPost, String> blogPostsCollection;
 
     public BlogPostsManager() {
-        DB db = MongoDBClient.INSTANCE.getDatabase("test");
-        DBCollection collection = db.getCollection(COLLECTION_NAME);
-        this.blogPostsCollection = JacksonDBCollection.wrap(collection, BlogPost.class,
-                String.class);
+        DB db = MongoDBClient.INSTANCE.getDatabase();
+        initBlogPostsCollection(db);
     }
 
     public BlogPostsManager(DB db) {
+        initBlogPostsCollection(db);
+    }
+
+    private void initBlogPostsCollection(DB db) {
         DBCollection collection = db.getCollection(COLLECTION_NAME);
         this.blogPostsCollection = JacksonDBCollection.wrap(collection, BlogPost.class,
                 String.class);
@@ -39,6 +41,5 @@ public class BlogPostsManager {
     public List<BlogPost> listAllBlogPosts() {
         return blogPostsCollection.find().toArray();
     }
-
 
 }

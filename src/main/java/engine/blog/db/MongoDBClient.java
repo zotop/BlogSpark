@@ -3,24 +3,12 @@ package engine.blog.db;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 
 import java.io.IOException;
 
 public enum MongoDBClient {
 
     INSTANCE;
-
-    private MongodStarter starter;
-    private MongodExecutable mongodExecutable;
-    private MongodProcess mongodProcess;
 
     private MongoClient mongoClient;
 
@@ -39,12 +27,12 @@ public enum MongoDBClient {
 
     }
 
-    public DB getDatabase(String databaseName) {
+    public DB getDatabase() {
+        return getDatabase("dev");
+    }
+
+    private DB getDatabase(String databaseName) {
         return mongoClient.getDB(databaseName);
     }
 
-    public void stop() {
-        mongodProcess.stop();
-        mongodExecutable.stop();
-    }
 }

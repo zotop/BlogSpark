@@ -1,11 +1,9 @@
 package engine.blog.resource;
 
 
-import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
 import engine.blog.util.JsonTransformer;
-import org.mongojack.internal.stream.JacksonDBDecoder;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
