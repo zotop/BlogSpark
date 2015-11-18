@@ -12,7 +12,6 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
-import engine.blog.db.BlogPostsManager;
 import engine.blog.util.HttpResponse;
 import engine.blog.util.HttpUtil;
 import org.junit.*;
@@ -27,7 +26,6 @@ public class PostRouteTest {
     private MongodProcess mongodProcess;
     private MongoClient mongoClient;
     private DB mongoDatabase;
-    private BlogPostsManager blogPostsManager;
 
     @BeforeClass
     public static void beforeClass() {
