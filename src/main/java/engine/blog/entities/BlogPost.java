@@ -8,7 +8,7 @@ import org.mongojack.ObjectId;
 public class BlogPost {
 
     private String title;
-    private String bodyText;
+    private String body;
 
     @Id
     @ObjectId
@@ -25,9 +25,9 @@ public class BlogPost {
         return id;
     }
 
-    public BlogPost(String title, String bodyText) {
+    public BlogPost(String title, String body) {
         this.title = title;
-        this.bodyText = bodyText;
+        this.body = body;
     }
 
     public String getTitle() {
@@ -38,12 +38,12 @@ public class BlogPost {
         this.title = title;
     }
 
-    public String getBodyText() {
-        return bodyText;
+    public String getBody() {
+        return body;
     }
 
-    public void setBodyText(String bodyText) {
-        this.bodyText = bodyText;
+    public void setBody(String body) {
+        this.body = body;
     }
 
 

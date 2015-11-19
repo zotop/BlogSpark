@@ -38,7 +38,7 @@ public class BlogPostsManagerTest {
         WriteResult<BlogPost, String> writeResult = blogPostsManager.insertNewBlogPost(blogPost);
         Optional<BlogPost> blogPostFound = blogPostsManager.getBlogPostById(writeResult.getSavedId());
         assertTrue(blogPostFound.isPresent());
-        assertEquals("test_body_text", blogPostFound.get().getBodyText());
+        assertEquals("test_body_text", blogPostFound.get().getBody());
     }
 
     @Test
