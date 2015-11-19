@@ -24,7 +24,6 @@ public enum MongoDBClient {
 
     private MongoClient getClient() throws IOException {
         return new MongoClient( "localhost" , 27017 );
-
     }
 
     public DB getDatabase() {

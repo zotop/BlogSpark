@@ -15,11 +15,6 @@ public class BlogPostsManager {
     private static final String COLLECTION_NAME = "blogposts";
     private JacksonDBCollection<BlogPost, String> blogPostsCollection;
 
-    public BlogPostsManager() {
-        DB db = MongoDBClient.INSTANCE.getDatabase();
-        initBlogPostsCollection(db);
-    }
-
     public BlogPostsManager(DB db) {
         initBlogPostsCollection(db);
     }

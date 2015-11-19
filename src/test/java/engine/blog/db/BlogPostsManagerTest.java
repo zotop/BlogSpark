@@ -1,15 +1,8 @@
 package engine.blog.db;
 
 import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 import engine.blog.entities.BlogPost;
+import engine.blog.util.EmbeddedMongo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,23 +15,15 @@ import static org.junit.Assert.*;
 
 public class BlogPostsManagerTest {
 
-    private static final MongodStarter starter = MongodStarter.getDefaultInstance();
-    private MongodExecutable mongodExecutable;
-    private MongodProcess mongodProcess;
-    private MongoClient mongoClient;
-    private DB mongoDatabase;
+    private EmbeddedMongo embeddedMongo;
     private BlogPostsManager blogPostsManager;
 
     @Before
     public void setup() throws Exception {
-        mongodExecutable = starter.prepare(new MongodConfigBuilder()
-                .version(Version.Main.DEVELOPMENT)
-                .net(new Net(12345, Network.localhostIsIPv6()))
-                .build());
-        mongodProcess = mongodExecutable.start();
-        mongoClient = new MongoClient("localhost", 12345);
-        mongoDatabase = mongoClient.getDB("test");
-        blogPostsManager = new BlogPostsManager(mongoDatabase);
+        embeddedMongo = new EmbeddedMongo();
+        embeddedMongo.start();
+        DB testDatabase = embeddedMongo.getDatabase("test");
+        blogPostsManager = new BlogPostsManager(testDatabase);
     }
 
     @Test
@@ -69,16 +54,9 @@ public class BlogPostsManagerTest {
 
     }
 
-
-
     @After
     public void tearDown() {
-        try {
-            mongodProcess.stop();
-            mongodExecutable.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        embeddedMongo.stop();
 
     }
 }

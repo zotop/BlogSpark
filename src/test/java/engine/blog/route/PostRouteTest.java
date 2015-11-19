@@ -4,28 +4,20 @@ package engine.blog.route;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
+import engine.blog.util.EmbeddedMongo;
+import engine.blog.util.HttpCall;
 import engine.blog.util.HttpResponse;
-import engine.blog.util.HttpUtil;
 import org.junit.*;
 import spark.Spark;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PostRouteTest {
 
-    private static final MongodStarter starter = MongodStarter.getDefaultInstance();
-    private MongodExecutable mongodExecutable;
-    private MongodProcess mongodProcess;
-    private MongoClient mongoClient;
-    private DB mongoDatabase;
+    private EmbeddedMongo embeddedMongo;
 
     @BeforeClass
     public static void beforeClass() {
@@ -35,34 +27,28 @@ public class PostRouteTest {
 
     @Before
     public void setup() throws Exception {
-        mongodExecutable = starter.prepare(new MongodConfigBuilder()
-                .version(Version.Main.DEVELOPMENT)
-                .net(new Net(12345, Network.localhostIsIPv6()))
-                .build());
-        mongodProcess = mongodExecutable.start();
-        mongoClient = new MongoClient("localhost", 12345);
-        mongoDatabase = mongoClient.getDB("test");
-        new PostRoute(mongoDatabase);
+        embeddedMongo = new EmbeddedMongo();
+        embeddedMongo.start();
+        DB testDatabase = embeddedMongo.getDatabase("test");
+        new PostRoute(testDatabase);
     }
 
     @Test
     public void list_all_posts() {
-        HttpResponse response = HttpUtil.request("GET", "/post/list");
+        HttpResponse response = HttpCall.perform("GET", Path.POST + "list");
         JsonElement jsonResponse = response.json();
+        List<String> contentTypeList = response.headers.get("Content-Type");
+        assertEquals(200, response.status);
+        assertTrue(contentTypeList.contains("application/json"));
         assertTrue(jsonResponse instanceof JsonArray);
         JsonArray jsonArray = jsonResponse.getAsJsonArray();
         assertTrue(jsonArray.size() == 0);
+
     }
 
     @After
     public void tearDown() {
-        try {
-            mongodProcess.stop();
-            mongodExecutable.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        embeddedMongo.stop();
     }
 
     @AfterClass
