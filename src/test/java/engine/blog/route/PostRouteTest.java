@@ -8,6 +8,7 @@ import com.mongodb.DB;
 import engine.blog.util.EmbeddedMongo;
 import engine.blog.util.HttpCall;
 import engine.blog.util.HttpResponse;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,9 +42,9 @@ public class PostRouteTest {
     public void list_all_posts() {
         try {
             HttpResponse response = HttpCall.perform("GET", Path.POST + "list");
+            assertEquals(HttpStatus.OK_200, response.status);
             JsonElement jsonResponse = response.json();
             List<String> contentTypeList = response.headers.get("Content-Type");
-            assertEquals(200, response.status);
             assertTrue(contentTypeList.contains("application/json"));
             assertTrue(jsonResponse instanceof JsonArray);
             JsonArray jsonArray = jsonResponse.getAsJsonArray();
@@ -55,18 +56,29 @@ public class PostRouteTest {
     }
 
     @Test
+    public void insert_empty_post_should_throw_error() {
+        try {
+            HttpResponse response = HttpCall.perform("POST", Path.POST + "new");
+            assertEquals(HttpStatus.BAD_REQUEST_400, response.status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void insert_new_post() {
         try {
-            HttpResponse response = HttpCall.perform("POST", Path.POST + "new?title=FirstPost&body=SampleBody");
+            HttpResponse response = HttpCall.perform("POST", Path.POST + "new?title=First%20Post&body=Sample%20Body");
+            assertEquals(HttpStatus.CREATED_201, response.status);
             JsonElement jsonResponse = response.json();
             List<String > contentTypeList = response.headers.get("Content-Type");
-            assertEquals(201, response.status);
             assertTrue(contentTypeList.contains("application/json"));
             assertTrue(jsonResponse instanceof JsonObject);
             JsonObject jsonObject = jsonResponse.getAsJsonObject();
             assertTrue(jsonObject.has("id"));
-            assertEquals("FirstPost", jsonObject.get("title").getAsString());
-            assertEquals("SampleBody", jsonObject.get("body").getAsString());
+            assertEquals("First Post", jsonObject.get("title").getAsString());
+            assertEquals("Sample Body", jsonObject.get("body").getAsString());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

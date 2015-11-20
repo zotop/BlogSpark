@@ -1,6 +1,7 @@
 package engine.blog.util;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -19,7 +20,12 @@ public class HttpCall {
         connection.setDoOutput(true);
         connection.connect();
         Map<String, List<String>> headers = connection.getHeaderFields();
-        String body = IOUtils.toString(connection.getInputStream());
+        String body = "";
+        try {
+            body = IOUtils.toString(connection.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return new HttpResponse(connection.getResponseCode(), headers, body);
     }
 }

@@ -5,6 +5,7 @@ import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
 import engine.blog.util.JsonTransformer;
+import engine.blog.util.RequestUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.mongojack.WriteResult;
 
@@ -38,6 +39,10 @@ public class PostRoute {
         post(Path.POST + "new", (request, response) -> {
             String title = request.queryParams("title");
             String body = request.queryParams("body");
+            if (!RequestUtils.parametersAreValid(title, body)) {
+                response.status(HttpStatus.BAD_REQUEST_400);
+                return "Missing Parameters";
+            }
             BlogPost post = new BlogPost(title, body);
             WriteResult writeResult = blogPostsManager.insertNewBlogPost(post);
             BlogPost savedPost = (BlogPost) writeResult.getSavedObject();

@@ -51,7 +51,6 @@ public class BlogPostsManagerTest {
         blogPostsManager.insertNewBlogPost(blogPost2);
         allBlogPosts = blogPostsManager.listAllBlogPosts();
         assertEquals(2, allBlogPosts.size());
-
     }
 
     @After
