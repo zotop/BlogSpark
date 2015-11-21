@@ -85,6 +85,41 @@ public class PostRouteTest {
         }
     }
 
+    @Test
+    public void get_non_existing_blog_post_by_id() {
+        try {
+            HttpResponse response = HttpCall.perform("GET", Path.POST + "view?id=564cfb3cd1c44b940ebfbd3e");
+            assertEquals(HttpStatus.OK_200, response.status);
+            List<String> contentTypeList = response.headers.get("Content-Type");
+            assertTrue(contentTypeList.contains("application/json"));
+            assertEquals("{}", response.body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void get_blog_post_by_id() {
+        try {
+            HttpResponse newBlogPostResponse = HttpCall.perform("POST", Path.POST + "new?title=First%20Post&body=Sample%20Body");
+            JsonElement jsonElement = newBlogPostResponse.json();
+            String newPostId = jsonElement.getAsJsonObject().get("id").getAsString();
+            HttpResponse findPostResponse = HttpCall.perform("GET", Path.POST + "view?id=" + newPostId);
+            assertEquals(HttpStatus.OK_200, findPostResponse.status);
+            List<String> contentTypeList = findPostResponse.headers.get("Content-Type");
+            assertTrue(contentTypeList.contains("application/json"));
+            jsonElement = findPostResponse.json();
+            String foundId = jsonElement.getAsJsonObject().get("id").getAsString();
+            assertEquals(newPostId, foundId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+
+
     @AfterClass
     public static void afterClass() {
         embeddedMongo.stop();
