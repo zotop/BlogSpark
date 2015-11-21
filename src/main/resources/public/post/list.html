@@ -13,6 +13,12 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- JS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="../js/handlebars-v4.0.5.min.js"></script>
+    <script src="../js/jquery-2.1.4.min.js"></script>
+
+
     <!-- FONT
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
@@ -26,25 +32,31 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="../images/favicon.png">
 
+    <script>
+        $(document).ready(function () {
+            $.getJSON("http://localhost:8080/api/post/list", function(data){
+                var source = $("#postList").html();
+                var template = Handlebars.compile(source);
+                $('#postList').html(template(data));
+            });
+        });
+
+    </script>
+
 </head>
 <body>
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="container">
-    <div class="row">
-        <div class="two-thirds column" style="margin-top: 15%">
-            <h4>Basic Page</h4>
-            <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
-        </div>
-    </div>
-
+<div id="postList" class="container">
+    {{#each .}}
     <div class="row">
         <div class="two-thirds column" style="margin-top: 5%">
-            <h4>Basic Page</h4>
-            <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+            <h4>{{title}}</h4>
+            <p>{{body}}</p>
         </div>
     </div>
+    {{/each}}
 </div>
 
 
