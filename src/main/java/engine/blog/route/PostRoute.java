@@ -1,11 +1,13 @@
 package engine.blog.route;
 
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
-import engine.blog.util.JsonTransformer;
+import engine.blog.json.ErrorResponse;
+import engine.blog.json.JsonTransformer;
 import engine.blog.util.RequestUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.mongojack.WriteResult;
@@ -41,18 +43,18 @@ public class PostRoute {
 
     private void insertNewPost() {
         post(Path.POST + "new", (request, response) -> {
-            String title = request.queryParams("title");
-            String body = request.queryParams("body");
-            if (!RequestUtils.parametersAreValid(title, body)) {
+            BlogPost post = new Gson().fromJson(request.body(), BlogPost.class);
+            if(post != null) {
+                WriteResult writeResult = blogPostsManager.insertNewBlogPost(post);
+                BlogPost savedPost = (BlogPost) writeResult.getSavedObject();
+                response.type("application/json");
+                response.status(HttpStatus.CREATED_201);
+                return savedPost;
+            } else {
                 response.status(HttpStatus.BAD_REQUEST_400);
-                return "Missing Parameters";
+                response.type("application/json");
+                return new ErrorResponse("Missing parameters");
             }
-            BlogPost post = new BlogPost(title, body);
-            WriteResult writeResult = blogPostsManager.insertNewBlogPost(post);
-            BlogPost savedPost = (BlogPost) writeResult.getSavedObject();
-            response.type("application/json");
-            response.status(HttpStatus.CREATED_201);
-            return savedPost;
         }, new JsonTransformer());
     }
 

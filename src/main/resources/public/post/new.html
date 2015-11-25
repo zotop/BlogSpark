@@ -34,7 +34,13 @@
 
     <script>
         $(document).ready(function () {
-
+            $("#saveButton").on("click", function() {
+                var title = $("#postTitle").val();
+                var body = $("#postTextArea").val();
+                $.post(window.location.origin + "/api/post/new", JSON.stringify({title: title, body: body}),function(data){
+                    console.log("data", data);
+                }, "json");
+            });
         });
 
     </script>

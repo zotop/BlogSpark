@@ -1,4 +1,4 @@
-package engine.blog.util;
+package engine.blog.json;
 
 import com.google.gson.Gson;
 import spark.ResponseTransformer;
