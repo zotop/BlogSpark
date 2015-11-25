@@ -17,6 +17,7 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <script src="../js/handlebars-v4.0.5.min.js"></script>
     <script src="../js/jquery-2.1.4.min.js"></script>
+    <script src="//tinymce.cachefly.net/4.3/tinymce.min.js"></script>
 
 
     <!-- FONT
@@ -32,11 +33,16 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="../images/favicon.png">
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
+
+            tinymce.init({
+                selector: "#postTextArea"
+            });
+
             $("#saveButton").on("click", function() {
                 var title = $("#postTitle").val();
-                var body = $("#postTextArea").val();
+                var body = tinyMCE.activeEditor.getContent();
                 $.post(window.location.origin + "/api/post/new", JSON.stringify({title: title, body: body}),function(data){
                     console.log("data", data);
                 }, "json");
@@ -56,6 +62,7 @@
         <div class="two-thirds column" style="margin-top: 5%">
             <input id="postTitle" class="u-full-width" type="text" placeholder="Post title...">
             <textarea id="postTextArea" class="u-full-width" placeholder="Write your post content here..."></textarea>
+            <br><br>
             <input id="saveButton" class="button-primary" type="button" value="Save">
         </div>
     </div>
