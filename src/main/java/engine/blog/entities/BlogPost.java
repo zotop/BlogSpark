@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
+import java.util.Date;
+
 
 public class BlogPost {
 
     private String title;
     private String body;
+
+    private Date creationDate;
 
     @Id
     @ObjectId
@@ -46,5 +50,11 @@ public class BlogPost {
         this.body = body;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 }

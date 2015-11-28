@@ -6,6 +6,7 @@ import engine.blog.entities.BlogPost;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class BlogPostsManager {
     }
 
     public WriteResult insertNewBlogPost(BlogPost blogPost) {
+        blogPost.setCreationDate(new Date());
         return blogPostsCollection.insert(blogPost);
     }
 

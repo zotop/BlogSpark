@@ -87,6 +87,7 @@ public class PostRouteTest {
             assertTrue(jsonResponse instanceof JsonObject);
             jsonObject = jsonResponse.getAsJsonObject();
             assertTrue(jsonObject.has("id"));
+            assertTrue(jsonObject.has("creationDate"));
             assertEquals("First Post", jsonObject.get("title").getAsString());
             assertEquals("Sample Body", jsonObject.get("body").getAsString());
         } catch (Exception e) {

@@ -39,6 +39,11 @@
                     return new Handlebars.SafeString("<a href='view.html?id=" + id + "'>" + "read more...</a>");
             });
 
+            Handlebars.registerHelper('formatDate', function(date) {
+                    var creationDate = new Date(date);
+                    return new Handlebars.SafeString(creationDate.toDateString());
+            });
+
             $.getJSON(window.location.origin + "/api/post/list", function(data){
                 var source = $("#postList").html();
                 var template = Handlebars.compile(source);
@@ -58,7 +63,8 @@
     {{#each .}}
     <div class="row">
         <div class="two-thirds column" style="margin-top: 5%">
-            <h4>{{title}}</h4>
+            <h4 style="display: inline;">{{title}} </h4>
+            <h6 style="display: inline;">{{formatDate creationDate}}</h6>
             <p>{{{body}}} &nbsp;{{postUrl id}}</p>
         </div>
     </div>
