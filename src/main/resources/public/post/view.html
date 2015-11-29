@@ -46,13 +46,28 @@
             }
         }
 
+
+
         $(document).ready(function () {
+
+            Handlebars.registerHelper('postTags', function(tags) {
+                if(tags.length <= 0) {
+                    return " - ";
+                }
+                var formattedTags = "";
+                for(var i = 0; i < tags.length; i++) {
+                    formattedTags = formattedTags + "<a href=''>" + tags[i] + "</a>&nbsp;"
+                }
+                return new Handlebars.SafeString(formattedTags);
+            });
 
             var id = getUrlParameter("id");
             $.getJSON(window.location.origin + "/api/post/view?id=" + id, function(data){
                 console.log("data", data);
-                $("#title").text(data.title);
-                $("#body").html(data.body);
+                var source = $("#post").html();
+                var template = Handlebars.compile(source);
+                $('#post').html(template(data));
+
             });
 
         });
@@ -67,8 +82,9 @@
 <div id="post" class="container">
     <div class="row">
         <div class="two-thirds column" style="margin-top: 5%">
-            <h4 id="title"></h4>
-            <div id="body"></div>
+            <h4 id="title">{{title}}</h4>
+            <div id="body">{{{body}}}</div>
+            <div><i>Tags: </i>{{postTags tags}}</div>
         </div>
     </div>
 </div>

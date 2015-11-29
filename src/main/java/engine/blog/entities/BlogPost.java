@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class BlogPost {
 
     private String title;
     private String body;
-
     private Date creationDate;
+    private List<String> tags = new ArrayList<>();
 
     @Id
     @ObjectId
@@ -56,5 +58,13 @@ public class BlogPost {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }

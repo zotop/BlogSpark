@@ -4,6 +4,7 @@ package engine.blog.route;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mongodb.DB;
 import engine.blog.util.EmbeddedMongo;
 import engine.blog.util.HttpCall;
@@ -79,6 +80,10 @@ public class PostRouteTest {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("title", "First Post");
             jsonObject.addProperty("body", "Sample Body");
+            JsonArray tagsArray = new JsonArray();
+            tagsArray.add(new JsonPrimitive("rest"));
+            tagsArray.add(new JsonPrimitive("api"));
+            jsonObject.add("tags", tagsArray);
             HttpResponse response = HttpCall.post(Path.POST + "new", jsonObject.toString());
             assertEquals(HttpStatus.CREATED_201, response.status);
             JsonElement jsonResponse = response.json();
@@ -90,6 +95,9 @@ public class PostRouteTest {
             assertTrue(jsonObject.has("creationDate"));
             assertEquals("First Post", jsonObject.get("title").getAsString());
             assertEquals("Sample Body", jsonObject.get("body").getAsString());
+            JsonArray tags = (JsonArray) jsonObject.get("tags");
+            assertEquals(2, tags.size());
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

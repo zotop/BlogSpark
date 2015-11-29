@@ -36,7 +36,7 @@
         $(document).ready(function () {
 
             Handlebars.registerHelper('postUrl', function(id) {
-                    return new Handlebars.SafeString("<a href='view.html?id=" + id + "'>" + "read more...</a>");
+                    return new Handlebars.SafeString("<a href='view.html?id=" + id + "'>" + "Read it</a>");
             });
 
             Handlebars.registerHelper('formatDate', function(date) {
@@ -44,7 +44,19 @@
                     return new Handlebars.SafeString(creationDate.toDateString());
             });
 
+            Handlebars.registerHelper('postTags', function(tags) {
+                    if(tags.length <= 0) {
+                        return " - ";
+                    }
+                    var formattedTags = "";
+                    for(var i = 0; i < tags.length; i++) {
+                        formattedTags = formattedTags + "<a href=''>" + tags[i] + "</a>&nbsp;"
+                    }
+                    return new Handlebars.SafeString(formattedTags);
+            });
+
             $.getJSON(window.location.origin + "/api/post/list", function(data){
+                console.log("data", data);
                 var source = $("#postList").html();
                 var template = Handlebars.compile(source);
                 $('#postList').html(template(data));
@@ -65,7 +77,8 @@
         <div class="two-thirds column" style="margin-top: 5%">
             <h4 style="display: inline;">{{title}} </h4>
             <h6 style="display: inline;">{{formatDate creationDate}}</h6>
-            <p>{{{body}}} &nbsp;{{postUrl id}}</p>
+            <div><i>Tags: </i>{{postTags tags}}</div>
+            <p>{{postUrl id}}</p>
         </div>
     </div>
     {{/each}}

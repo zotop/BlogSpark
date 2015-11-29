@@ -17,6 +17,8 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <script src="../js/handlebars-v4.0.5.min.js"></script>
     <script src="../js/jquery-2.1.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/tag-it.min.js"></script>
     <script src="//tinymce.cachefly.net/4.3/tinymce.min.js"></script>
 
 
@@ -28,6 +30,8 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/skeleton.css">
+    <link rel="stylesheet" href="../css/jquery.tagit.css">
+    <link rel="stylesheet" href="../css/tagit.ui-zendesk.css">
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -40,13 +44,21 @@
                 selector: "#postTextArea"
             });
 
+            $("#tags").tagit({
+                placeholderText: "Enter tag..."
+            });
+
             $("#saveButton").on("click", function() {
                 var title = $("#postTitle").val();
                 var body = tinyMCE.activeEditor.getContent();
-                $.post(window.location.origin + "/api/post/new", JSON.stringify({title: title, body: body}),function(data){
+                var tags = $("#tags").tagit("assignedTags");
+                $.post(window.location.origin + "/api/post/new", JSON.stringify({title: title, body: body, tags: tags}),function(data){
                     console.log("data", data);
+                    window.location = window.location.origin;
                 }, "json");
             });
+
+
         });
 
     </script>
@@ -63,6 +75,7 @@
             <input id="postTitle" class="u-full-width" type="text" placeholder="Post title...">
             <textarea id="postTextArea" class="u-full-width" placeholder="Write your post content here..."></textarea>
             <br>
+            <div><ul id="tags"></ul></div>
             <input id="saveButton" class="button-primary" type="button" value="Save">
         </div>
     </div>
