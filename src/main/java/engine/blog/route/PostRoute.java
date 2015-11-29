@@ -36,7 +36,12 @@ public class PostRoute {
         get(Path.POST + "list", (request, response) -> {
             response.type("application/json");
             response.status(HttpStatus.OK_200);
-            return blogPostsManager.listAllBlogPosts();
+            String tag = request.queryParams("tag");
+            if(RequestUtils.parametersAreValid(tag)) {
+                return blogPostsManager.listBlogPostsContainingTag(tag);
+            } else {
+                return blogPostsManager.listAllBlogPosts();
+            }
 
         }, new JsonTransformer());
     }

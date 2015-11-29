@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mongodb.DB;
+import engine.blog.db.BlogPostsManager;
+import engine.blog.entities.BlogPost;
 import engine.blog.util.EmbeddedMongo;
 import engine.blog.util.HttpCall;
 import engine.blog.util.HttpResponse;
@@ -17,12 +19,14 @@ import org.junit.Test;
 import spark.Spark;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class PostRouteTest {
 
+    private BlogPostsManager blogPostsManager;
     private static EmbeddedMongo embeddedMongo;
 
     @BeforeClass
@@ -37,6 +41,7 @@ public class PostRouteTest {
     public void setup() throws Exception {
         DB testDatabase = embeddedMongo.getDatabase("test");
         new PostRoute(testDatabase);
+        blogPostsManager = new BlogPostsManager(testDatabase);
     }
 
     @Test
@@ -135,6 +140,44 @@ public class PostRouteTest {
             jsonElement = findPostResponse.json();
             String foundId = jsonElement.getAsJsonObject().get("id").getAsString();
             assertEquals(newPostId, foundId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void listing_posts_with_non_existent_tag_should_return_empty_results() {
+        try {
+            BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
+            blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
+            blogPostsManager.insertNewBlogPost(blogPost1);
+            HttpResponse response = HttpCall.get(Path.POST + "list?tag=non_existent_tag");
+            assertEquals(HttpStatus.OK_200, response.status);
+            JsonArray jsonResponse = response.json().getAsJsonArray();
+            assertEquals(0, jsonResponse.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void posts_containing_a_certain_tag_should_be_returned() {
+        try {
+            BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
+            blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
+            BlogPost blogPost2 = new BlogPost("test2", "test_body_text2");
+            blogPost2.setTags(Arrays.asList(new String[]{"api"}));
+            BlogPost blogPost3 = new BlogPost("test3", "test_body_text3");
+            blogPost3.setTags(Arrays.asList(new String[]{"micro", "rest"}));
+            blogPostsManager.insertNewBlogPost(blogPost1);
+            blogPostsManager.insertNewBlogPost(blogPost2);
+            blogPostsManager.insertNewBlogPost(blogPost3);
+            HttpResponse response = HttpCall.get(Path.POST + "list?tag=rest");
+            assertEquals(HttpStatus.OK_200, response.status);
+            JsonArray jsonResponse = response.json().getAsJsonArray();
+            assertEquals(2, jsonResponse.size());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

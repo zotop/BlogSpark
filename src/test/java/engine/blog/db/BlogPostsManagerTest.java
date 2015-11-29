@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mongojack.WriteResult;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,19 @@ public class BlogPostsManagerTest {
         allBlogPosts = blogPostsManager.listAllBlogPosts();
         assertEquals(2, allBlogPosts.size());
         assertEquals(null, allBlogPosts.get(0).getBody());
+    }
+
+    @Test
+    public void list_all_posts_by_tag() {
+        BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
+        blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
+        BlogPost blogPost2 = new BlogPost("test2", "test_body_text2");
+        blogPost2.setTags(Arrays.asList(new String[]{"api", "micro"}));
+        blogPostsManager.insertNewBlogPost(blogPost1);
+        blogPostsManager.insertNewBlogPost(blogPost2);
+        List<BlogPost> blogPosts = blogPostsManager.listBlogPostsContainingTag("api");
+        assertEquals(1, blogPosts.size());
+        assertEquals("test2", blogPosts.get(0).getTitle());
     }
 
     @After
