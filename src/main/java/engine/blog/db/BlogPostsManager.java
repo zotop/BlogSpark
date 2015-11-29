@@ -1,7 +1,9 @@
 package engine.blog.db;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import engine.blog.entities.BlogPost;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
@@ -36,7 +38,9 @@ public class BlogPostsManager {
     }
 
     public List<BlogPost> listAllBlogPosts() {
-        return blogPostsCollection.find().toArray();
+        DBObject creationDateDescending = new BasicDBObject();
+        creationDateDescending.put("creationDate", -1);
+        return blogPostsCollection.find().sort(creationDateDescending).toArray();
     }
 
 }
