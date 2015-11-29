@@ -40,7 +40,9 @@ public class BlogPostsManager {
     public List<BlogPost> listAllBlogPosts() {
         DBObject creationDateDescending = new BasicDBObject();
         creationDateDescending.put("creationDate", -1);
-        return blogPostsCollection.find().sort(creationDateDescending).toArray();
+        DBObject omitPostBody = new BasicDBObject();
+        omitPostBody.put("body", 0);
+        return blogPostsCollection.find(new BasicDBObject(), omitPostBody).sort(creationDateDescending).toArray();
     }
 
 }
