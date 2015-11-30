@@ -50,16 +50,13 @@ public class PostRouteTest {
             HttpResponse response = HttpCall.get(Path.POST + "list");
             JsonElement jsonResponse = response.json();
             int numberOfPosts = jsonResponse.getAsJsonArray().size();
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("title", "First Post");
-            jsonObject.addProperty("body", "Sample Body");
-            HttpCall.post(Path.POST + "new", jsonObject.toString());
-            HttpCall.post(Path.POST + "new", jsonObject.toString());
+            BlogPost blogPost = new BlogPost("test1", "test_body_text1");
+            blogPostsManager.insertNewBlogPost(blogPost);
+            blogPostsManager.insertNewBlogPost(blogPost);
+
             response = HttpCall.get(Path.POST + "list");
             assertEquals(HttpStatus.OK_200, response.status);
             jsonResponse = response.json();
-            List<String> contentTypeList = response.headers.get("Content-Type");
-            assertTrue(contentTypeList.contains("application/json"));
             JsonArray jsonArray = jsonResponse.getAsJsonArray();
             assertEquals(numberOfPosts + 2, jsonArray.size());
         } catch (Exception e) {
@@ -89,12 +86,10 @@ public class PostRouteTest {
             tagsArray.add(new JsonPrimitive("rest"));
             tagsArray.add(new JsonPrimitive("api"));
             jsonObject.add("tags", tagsArray);
+
             HttpResponse response = HttpCall.post(Path.POST + "new", jsonObject.toString());
             assertEquals(HttpStatus.CREATED_201, response.status);
             JsonElement jsonResponse = response.json();
-            List<String> contentTypeList = response.headers.get("Content-Type");
-            assertTrue(contentTypeList.contains("application/json"));
-            assertTrue(jsonResponse instanceof JsonObject);
             jsonObject = jsonResponse.getAsJsonObject();
             assertTrue(jsonObject.has("id"));
             assertTrue(jsonObject.has("creationDate"));
@@ -127,19 +122,14 @@ public class PostRouteTest {
     @Test
     public void get_blog_post_by_id() {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("title", "First Post");
-            jsonObject.addProperty("body", "Sample Body");
-            HttpResponse newBlogPostResponse = HttpCall.post(Path.POST + "new", jsonObject.toString());
-            JsonElement jsonElement = newBlogPostResponse.json();
-            String newPostId = jsonElement.getAsJsonObject().get("id").getAsString();
-            HttpResponse findPostResponse = HttpCall.get(Path.POST + "view?id=" + newPostId);
+            BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
+            blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
+            BlogPost savedPost = (BlogPost) blogPostsManager.insertNewBlogPost(blogPost1).getSavedObject();
+            HttpResponse findPostResponse = HttpCall.get(Path.POST + "view?id=" + savedPost.getId());
             assertEquals(HttpStatus.OK_200, findPostResponse.status);
-            List<String> contentTypeList = findPostResponse.headers.get("Content-Type");
-            assertTrue(contentTypeList.contains("application/json"));
-            jsonElement = findPostResponse.json();
-            String foundId = jsonElement.getAsJsonObject().get("id").getAsString();
-            assertEquals(newPostId, foundId);
+            JsonElement responseJson = findPostResponse.json();
+            String foundId = responseJson.getAsJsonObject().get("id").getAsString();
+            assertEquals(savedPost.getId(), foundId);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -174,6 +164,7 @@ public class PostRouteTest {
             blogPostsManager.insertNewBlogPost(blogPost1);
             blogPostsManager.insertNewBlogPost(blogPost2);
             blogPostsManager.insertNewBlogPost(blogPost3);
+
             HttpResponse response = HttpCall.get(Path.POST + "list?tag=rest");
             assertEquals(HttpStatus.OK_200, response.status);
             JsonArray jsonResponse = response.json().getAsJsonArray();
