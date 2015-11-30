@@ -14,9 +14,7 @@ import org.mongojack.WriteResult;
 
 import java.util.Optional;
 
-import static spark.Spark.delete;
-import static spark.Spark.get;
-import static spark.Spark.post;
+import static spark.Spark.*;
 
 public class PostRoute {
 

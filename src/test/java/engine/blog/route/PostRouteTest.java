@@ -194,7 +194,6 @@ public class PostRouteTest {
     @Test
     public void deleting_a_post_twice_should_return_status_not_found() {
         try {
-
             BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
             blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
             WriteResult writeResult = blogPostsManager.insertNewBlogPost(blogPost1);
