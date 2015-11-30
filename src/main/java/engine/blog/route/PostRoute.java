@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
-import engine.blog.json.ErrorResponse;
+import engine.blog.json.JsonResponse;
 import engine.blog.json.JsonTransformer;
 import engine.blog.util.RequestUtils;
 import org.eclipse.jetty.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.mongojack.WriteResult;
 
 import java.util.Optional;
 
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -30,10 +31,11 @@ public class PostRoute {
         insertNewPost();
         listAllPosts();
         getPostById();
+        deletePostById();
     }
 
     private void listAllPosts() {
-        get(Path.POST + "list", (request, response) -> {
+        get(Path.POST + "/list", (request, response) -> {
             response.type("application/json");
             response.status(HttpStatus.OK_200);
             String tag = request.queryParams("tag");
@@ -47,7 +49,7 @@ public class PostRoute {
     }
 
     private void insertNewPost() {
-        post(Path.POST + "new", (request, response) -> {
+        post(Path.POST + "/new", (request, response) -> {
             BlogPost post = new Gson().fromJson(request.body(), BlogPost.class);
             if(post != null) {
                 WriteResult writeResult = blogPostsManager.insertNewBlogPost(post);
@@ -58,13 +60,13 @@ public class PostRoute {
             } else {
                 response.status(HttpStatus.BAD_REQUEST_400);
                 response.type("application/json");
-                return new ErrorResponse("Missing parameters");
+                return new JsonResponse("Missing parameters");
             }
         }, new JsonTransformer());
     }
 
     private void getPostById() {
-        get(Path.POST + "view", (request, response) -> {
+        get(Path.POST + "/view", (request, response) -> {
             String id = request.queryParams("id");
             if (!RequestUtils.parametersAreValid(id)) {
                 response.status(HttpStatus.BAD_REQUEST_400);
@@ -77,6 +79,25 @@ public class PostRoute {
                 return blogPost.get();
             } else {
                 return new JsonObject();
+            }
+
+        }, new JsonTransformer());
+    }
+
+    private void deletePostById() {
+        delete(Path.POST, (request, response) -> {
+            String id = request.queryParams("id");
+            if (!RequestUtils.parametersAreValid(id)) {
+                response.status(HttpStatus.BAD_REQUEST_400);
+                return "Missing Parameters";
+            }
+            int nbrPostsDeleted = blogPostsManager.deletePost(id);
+            if(nbrPostsDeleted <= 0) {
+                response.status(HttpStatus.NOT_FOUND_404);
+                return new JsonResponse("Post with id " + id + " could not be found for deletion");
+            } else {
+                response.status(HttpStatus.OK_200);
+                return new JsonResponse("Post with id " + id + " was deleted");
             }
 
         }, new JsonTransformer());

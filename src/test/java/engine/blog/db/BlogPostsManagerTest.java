@@ -68,9 +68,21 @@ public class BlogPostsManagerTest {
         assertEquals("test2", blogPosts.get(0).getTitle());
     }
 
+    @Test
+    public void delete_post() {
+        BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
+        blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
+        WriteResult writeResult = blogPostsManager.insertNewBlogPost(blogPost1);
+        String savedPostId = (String) writeResult.getSavedId();
+        Optional<BlogPost> blogPost = blogPostsManager.getBlogPostById(savedPostId);
+        assertTrue(blogPost.isPresent());
+        blogPostsManager.deletePost(savedPostId);
+        blogPost = blogPostsManager.getBlogPostById(savedPostId);
+        assertFalse(blogPost.isPresent());
+    }
+
     @After
     public void tearDown() {
         embeddedMongo.stop();
-
     }
 }

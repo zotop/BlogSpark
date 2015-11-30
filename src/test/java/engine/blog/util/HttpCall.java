@@ -49,4 +49,20 @@ public class HttpCall {
         }
         return new HttpResponse(connection.getResponseCode(), headers, body);
     }
+
+    public static HttpResponse delete(String path) throws IOException {
+        URL url = new URL("http://localhost:4567" + path);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.setDoOutput(true);
+        connection.connect();
+        Map<String, List<String>> headers = connection.getHeaderFields();
+        String body = "";
+        try {
+            body = IOUtils.toString(connection.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new HttpResponse(connection.getResponseCode(), headers, body);
+    }
 }

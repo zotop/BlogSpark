@@ -55,4 +55,8 @@ public class BlogPostsManager {
         return blogPostsCollection.find(tagObject, omitPostBody).sort(creationDateDescending).toArray();
     }
 
+    public int deletePost(String id) {
+        return blogPostsCollection.removeById(id).getN();
+    }
+
 }
