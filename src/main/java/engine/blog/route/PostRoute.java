@@ -8,7 +8,7 @@ import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
 import engine.blog.json.JsonResponse;
 import engine.blog.json.JsonTransformer;
-import engine.blog.util.RequestUtils;
+import engine.blog.testutils.RequestUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.mongojack.WriteResult;
 

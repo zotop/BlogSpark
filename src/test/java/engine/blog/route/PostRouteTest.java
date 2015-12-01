@@ -8,9 +8,9 @@ import com.google.gson.JsonPrimitive;
 import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
-import engine.blog.util.EmbeddedMongo;
-import engine.blog.util.HttpCall;
-import engine.blog.util.HttpResponse;
+import engine.blog.testutils.EmbeddedMongo;
+import engine.blog.testutils.HttpCall;
+import engine.blog.testutils.HttpResponse;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.*;
 import org.mongojack.WriteResult;
@@ -25,19 +25,16 @@ import static org.junit.Assert.*;
 public class PostRouteTest {
 
     private BlogPostsManager blogPostsManager;
-    private static EmbeddedMongo embeddedMongo;
 
     @BeforeClass
     public static void setupOnce() throws IOException {
         Spark.init();
         Spark.awaitInitialization();
-        embeddedMongo = new EmbeddedMongo();
-        embeddedMongo.start();
     }
 
     @Before
     public void setup() throws Exception {
-        DB testDatabase = embeddedMongo.getDatabase("test");
+        DB testDatabase = EmbeddedMongo.INSTANCE.getDatabase("test");
         new PostRoute(testDatabase);
         blogPostsManager = new BlogPostsManager(testDatabase);
     }
@@ -206,12 +203,11 @@ public class PostRouteTest {
 
     @After
     public void clearDatabase() {
-        embeddedMongo.getDatabase("test").dropDatabase();
+        EmbeddedMongo.INSTANCE.getDatabase("test").dropDatabase();
     }
 
     @AfterClass
     public static void afterClass() {
-        embeddedMongo.stop();
         Spark.stop();
     }
 

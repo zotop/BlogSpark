@@ -1,4 +1,4 @@
-package engine.blog.util;
+package engine.blog.testutils;
 
 import org.apache.commons.io.IOUtils;
 
@@ -24,7 +24,6 @@ public class HttpCall {
         try {
             body = IOUtils.toString(connection.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return new HttpResponse(connection.getResponseCode(), headers, body);
     }
@@ -45,7 +44,6 @@ public class HttpCall {
         try {
             body = IOUtils.toString(connection.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return new HttpResponse(connection.getResponseCode(), headers, body);
     }
@@ -61,7 +59,6 @@ public class HttpCall {
         try {
             body = IOUtils.toString(connection.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return new HttpResponse(connection.getResponseCode(), headers, body);
     }

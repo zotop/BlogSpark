@@ -1,4 +1,4 @@
-package engine.blog.util;
+package engine.blog.testutils;
 
 import org.apache.commons.lang3.StringUtils;
 

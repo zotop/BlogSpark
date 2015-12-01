@@ -2,8 +2,10 @@ package engine.blog.db;
 
 import com.mongodb.DB;
 import engine.blog.entities.BlogPost;
-import engine.blog.util.EmbeddedMongo;
-import org.junit.*;
+import engine.blog.testutils.EmbeddedMongo;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mongojack.WriteResult;
 
 import java.util.Arrays;
@@ -14,17 +16,11 @@ import static org.junit.Assert.*;
 
 public class BlogPostsManagerTest {
 
-    private static EmbeddedMongo embeddedMongo = new EmbeddedMongo();
     private BlogPostsManager blogPostsManager;
-
-    @BeforeClass
-    public static void startEmbeddedMongo() throws Exception {
-        embeddedMongo.start();
-    }
 
     @Before
     public void setUpDatabase() {
-        DB testDatabase = embeddedMongo.getDatabase("test");
+        DB testDatabase = EmbeddedMongo.INSTANCE.getDatabase("test");
         blogPostsManager = new BlogPostsManager(testDatabase);
     }
 
@@ -83,11 +79,6 @@ public class BlogPostsManagerTest {
 
     @After
     public void clearDatabase() {
-        embeddedMongo.getDatabase("test").dropDatabase();
-    }
-
-    @AfterClass
-    public static void stopEmbeddedMongo() {
-        embeddedMongo.stop();
+        EmbeddedMongo.INSTANCE.getDatabase("test").dropDatabase();
     }
 }
