@@ -12,10 +12,7 @@ import engine.blog.util.EmbeddedMongo;
 import engine.blog.util.HttpCall;
 import engine.blog.util.HttpResponse;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.mongojack.WriteResult;
 import spark.Spark;
 
@@ -31,7 +28,7 @@ public class PostRouteTest {
     private static EmbeddedMongo embeddedMongo;
 
     @BeforeClass
-    public static void beforeClass() throws IOException {
+    public static void setupOnce() throws IOException {
         Spark.init();
         Spark.awaitInitialization();
         embeddedMongo = new EmbeddedMongo();
@@ -205,6 +202,11 @@ public class PostRouteTest {
             e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+
+    @After
+    public void clearDatabase() {
+        embeddedMongo.getDatabase("test").dropDatabase();
     }
 
     @AfterClass
