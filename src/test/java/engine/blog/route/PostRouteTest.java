@@ -1,10 +1,9 @@
 package engine.blog.route;
 
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mongodb.DB;
 import engine.blog.db.BlogPostsManager;
 import engine.blog.entities.BlogPost;
@@ -20,7 +19,6 @@ import spark.Spark;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -76,25 +74,20 @@ public class PostRouteTest {
     @Test
     public void insert_new_post() {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("title", "First Post");
-            jsonObject.addProperty("body", "Sample Body");
-            JsonArray tagsArray = new JsonArray();
-            tagsArray.add(new JsonPrimitive("rest"));
-            tagsArray.add(new JsonPrimitive("api"));
-            jsonObject.add("tags", tagsArray);
-
-            HttpResponse response = HttpCall.perform(HttpMethod.POST, Path.POST + "/new", jsonObject.toString());
+            BlogPost blogPost = new BlogPost("First Post", "Sample Body");
+            blogPost.setTags(Arrays.asList(new String[]{"rest", "api"}));
+            String blogPostAsJsonString = new Gson().toJson(blogPost);
+            HttpResponse response = HttpCall.perform(HttpMethod.POST, Path.POST + "/new", blogPostAsJsonString);
             assertEquals(HttpStatus.CREATED_201, response.status);
-            JsonElement jsonResponse = response.json();
-            jsonObject = jsonResponse.getAsJsonObject();
-            assertTrue(jsonObject.has("id"));
-            assertTrue(jsonObject.has("creationDate"));
-            assertEquals("First Post", jsonObject.get("title").getAsString());
-            assertEquals("Sample Body", jsonObject.get("body").getAsString());
-            JsonArray tags = (JsonArray) jsonObject.get("tags");
+            blogPost = new Gson().fromJson(response.json(), BlogPost.class);
+            assertNotNull(blogPost.getId());
+            assertNotNull(blogPost.getCreationDate());
+            assertEquals("First Post", blogPost.getTitle());
+            assertEquals("Sample Body", blogPost.getBody());
+            List<String> tags = blogPost.getTags();
             assertEquals(2, tags.size());
-
+            assertTrue(tags.contains("rest"));
+            assertTrue(tags.contains("api"));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

@@ -1,6 +1,7 @@
 package engine.blog.entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
@@ -10,6 +11,15 @@ import java.util.List;
 
 
 public class BlogPost {
+
+    @JsonIgnore
+    public static final String CREATION_DATE = "creationDate";
+
+    @JsonIgnore
+    public static final String BODY = "body";
+
+    @JsonIgnore
+    public static final String TAGS = "tags";
 
     private String title;
     private String body;
