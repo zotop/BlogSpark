@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import spark.ResponseTransformer;
 
 /**
- * Created by joaoguerreiro on 14/11/15.
+ * Object to json converter
  */
 public class JsonTransformer implements ResponseTransformer {
 

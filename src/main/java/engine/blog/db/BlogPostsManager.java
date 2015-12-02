@@ -38,18 +38,14 @@ public class BlogPostsManager {
     }
 
     public List<BlogPost> listAllBlogPosts() {
-        DBObject creationDateDescending = new BasicDBObject();
-        creationDateDescending.put("creationDate", -1);
-        DBObject omitPostBody = new BasicDBObject();
-        omitPostBody.put("body", 0);
+        DBObject creationDateDescending = new BasicDBObject("creationDate", -1);
+        DBObject omitPostBody = new BasicDBObject("body", 0);
         return blogPostsCollection.find(new BasicDBObject(), omitPostBody).sort(creationDateDescending).toArray();
     }
 
     public List<BlogPost> listBlogPostsContainingTag(String tag) {
-        DBObject creationDateDescending = new BasicDBObject();
-        creationDateDescending.put("creationDate", -1);
-        DBObject omitPostBody = new BasicDBObject();
-        omitPostBody.put("body", 0);
+        DBObject creationDateDescending = new BasicDBObject("creationDate", -1);
+        DBObject omitPostBody = new BasicDBObject("body", 0);
         DBObject tagObject = new BasicDBObject();
         tagObject.put("tags", tag);
         return blogPostsCollection.find(tagObject, omitPostBody).sort(creationDateDescending).toArray();
