@@ -5,54 +5,29 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
  */
 public class HttpCall {
-    public static HttpResponse get(String path) throws IOException {
-        URL url = new URL("http://localhost:4567" + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setDoOutput(true);
-        connection.connect();
-        Map<String, List<String>> headers = connection.getHeaderFields();
-        String body = "";
-        try {
-            body = IOUtils.toString(connection.getInputStream());
-        } catch (IOException e) {
-        }
-        return new HttpResponse(connection.getResponseCode(), headers, body);
-    }
 
-    public static HttpResponse post(String path, String json) throws IOException {
-        URL url = new URL("http://localhost:4567" + path);
+    private static final String BASE_URL = "http://localhost:4567";
+
+    public static HttpResponse perform(HttpMethod method, String path, String json) throws IOException {
+        URL url = new URL(BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(method.value());
         connection.setDoOutput(true);
         if (json != null) {
             OutputStream os = connection.getOutputStream();
             os.write(json.getBytes());
             os.flush();
         }
-        connection.connect();
-        Map<String, List<String>> headers = connection.getHeaderFields();
-        String body = "";
-        try {
-            body = IOUtils.toString(connection.getInputStream());
-        } catch (IOException e) {
-        }
-        return new HttpResponse(connection.getResponseCode(), headers, body);
-    }
-
-    public static HttpResponse delete(String path) throws IOException {
-        URL url = new URL("http://localhost:4567" + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("DELETE");
-        connection.setDoOutput(true);
         connection.connect();
         Map<String, List<String>> headers = connection.getHeaderFields();
         String body = "";
