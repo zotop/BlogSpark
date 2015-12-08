@@ -6,5 +6,6 @@ package engine.blog.route;
 public class Path {
     private Path() {}
     public static final String POST = "/api/post";
+    public static final String USER = "/api/user";
 
 }

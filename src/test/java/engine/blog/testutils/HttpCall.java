@@ -16,6 +16,10 @@ public class HttpCall {
 
     private static final String BASE_URL = "http://localhost:4567";
 
+    public static HttpResponse perform(HttpMethod method, String path) throws IOException {
+        return perform(method, path, null);
+    }
+
     public static HttpResponse perform(HttpMethod method, String path, String json) throws IOException {
         URL url = new URL(BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

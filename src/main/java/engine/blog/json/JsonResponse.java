@@ -1,8 +1,6 @@
 package engine.blog.json;
 
 
-
-
 public class JsonResponse {
 
     private String message;

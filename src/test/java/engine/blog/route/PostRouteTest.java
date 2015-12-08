@@ -42,14 +42,14 @@ public class PostRouteTest {
     @Test
     public void list_all_posts() {
         try {
-            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list", null);
+            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list");
             JsonElement jsonResponse = response.json();
             int numberOfPosts = jsonResponse.getAsJsonArray().size();
             BlogPost blogPost = new BlogPost("test1", "test_body_text1");
             blogPostsManager.insertNewBlogPost(blogPost);
             blogPostsManager.insertNewBlogPost(blogPost);
 
-            response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list", null);
+            response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list");
             assertEquals(HttpStatus.OK_200, response.status);
             jsonResponse = response.json();
             JsonArray jsonArray = jsonResponse.getAsJsonArray();
@@ -63,7 +63,7 @@ public class PostRouteTest {
     @Test
     public void insert_empty_post_should_throw_error() {
         try {
-            HttpResponse response = HttpCall.perform(HttpMethod.POST, Path.POST + "/new", null);
+            HttpResponse response = HttpCall.perform(HttpMethod.POST, Path.POST + "/new");
             assertEquals(HttpStatus.BAD_REQUEST_400, response.status);
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +98,7 @@ public class PostRouteTest {
     @Test
     public void get_non_existing_blog_post_by_id() {
         try {
-            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/view?id=564cfb3cd1c44b940ebfbd3e", null);
+            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/view?id=564cfb3cd1c44b940ebfbd3e");
             assertEquals(HttpStatus.OK_200, response.status);
             List<String> contentTypeList = response.headers.get("Content-Type");
             assertTrue(contentTypeList.contains("application/json"));
@@ -115,7 +115,7 @@ public class PostRouteTest {
             BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
             blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
             BlogPost savedPost = (BlogPost) blogPostsManager.insertNewBlogPost(blogPost1).getSavedObject();
-            HttpResponse findPostResponse = HttpCall.perform(HttpMethod.GET, Path.POST + "/view?id=" + savedPost.getId(), null);
+            HttpResponse findPostResponse = HttpCall.perform(HttpMethod.GET, Path.POST + "/view?id=" + savedPost.getId());
             assertEquals(HttpStatus.OK_200, findPostResponse.status);
             JsonElement responseJson = findPostResponse.json();
             String foundId = responseJson.getAsJsonObject().get("id").getAsString();
@@ -132,7 +132,7 @@ public class PostRouteTest {
             BlogPost blogPost1 = new BlogPost("test1", "test_body_text1");
             blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
             blogPostsManager.insertNewBlogPost(blogPost1);
-            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list?tag=non_existent_tag", null);
+            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list?tag=non_existent_tag");
             assertEquals(HttpStatus.OK_200, response.status);
             JsonArray jsonResponse = response.json().getAsJsonArray();
             assertEquals(0, jsonResponse.size());
@@ -155,7 +155,7 @@ public class PostRouteTest {
             blogPostsManager.insertNewBlogPost(blogPost2);
             blogPostsManager.insertNewBlogPost(blogPost3);
 
-            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list?tag=rest", null);
+            HttpResponse response = HttpCall.perform(HttpMethod.GET, Path.POST + "/list?tag=rest");
             assertEquals(HttpStatus.OK_200, response.status);
             JsonArray jsonResponse = response.json().getAsJsonArray();
             assertEquals(2, jsonResponse.size());
@@ -172,7 +172,7 @@ public class PostRouteTest {
             blogPost1.setTags(Arrays.asList(new String[]{"rest"}));
             WriteResult writeResult = blogPostsManager.insertNewBlogPost(blogPost1);
             String savedId = (String) writeResult.getSavedId();
-            HttpResponse response = HttpCall.perform(HttpMethod.DELETE, Path.POST + "?id=" + savedId, null);
+            HttpResponse response = HttpCall.perform(HttpMethod.DELETE, Path.POST + "?id=" + savedId);
             assertEquals(HttpStatus.OK_200, response.status);
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,7 +188,7 @@ public class PostRouteTest {
             WriteResult writeResult = blogPostsManager.insertNewBlogPost(blogPost1);
             String savedId = (String) writeResult.getSavedId();
             blogPostsManager.deletePost(savedId);
-            HttpResponse response = HttpCall.perform(HttpMethod.DELETE, Path.POST + "?id=" + savedId, null);
+            HttpResponse response = HttpCall.perform(HttpMethod.DELETE, Path.POST + "?id=" + savedId);
             assertEquals(HttpStatus.NOT_FOUND_404, response.status);
         } catch (Exception e) {
             e.printStackTrace();
