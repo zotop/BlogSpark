@@ -16,6 +16,7 @@ import spark.Spark;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 
@@ -44,6 +45,7 @@ public class UserRouteTest {
             HttpResponse response = HttpCall.perform(HttpMethod.POST, Path.USER + "/login", credentialsAsJson);
             User authenticatedUser = new Gson().fromJson(response.body, User.class);
             assertEquals("login", authenticatedUser.getCredentials().getUsername());
+            assertNull(authenticatedUser.getCredentials().getPassword()); //check that password is not serialized in json
         }
         catch (Exception e) {
             e.printStackTrace();
