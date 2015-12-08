@@ -10,7 +10,7 @@ public class AdminUserPropertiesTest {
 
     @Test
     public void test_retrieving_admin_credentials() {
-        Credentials credentials = AdminUserProperties.INTANCE.getAdminCredentials();
+        Credentials credentials = AdminUserProperties.INSTANCE.getAdminCredentials();
         assertNotNull(credentials.getUsername());
         assertNotNull(credentials.getPassword());
     }

@@ -1,8 +1,6 @@
 package engine.blog.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Credentials {
 
     private String username;
@@ -24,7 +22,6 @@ public class Credentials {
         this.username = username;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }

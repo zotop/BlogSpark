@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public enum AdminUserProperties {
 
-    INTANCE;
+    INSTANCE;
 
     private final Properties adminProperties = new Properties();
 

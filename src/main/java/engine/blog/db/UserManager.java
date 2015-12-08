@@ -8,6 +8,7 @@ import com.mongodb.DBObject;
 import engine.blog.entities.Credentials;
 import engine.blog.entities.User;
 import engine.blog.properties.AdminUserProperties;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
 
@@ -40,15 +41,20 @@ public class UserManager {
         credentialsObject.append("credentials.password", credentials.getPassword());
         return usersCollection.findOne(credentialsObject);
         */
-        Credentials adminCredentials = AdminUserProperties.INTANCE.getAdminCredentials();
+        Credentials adminCredentials = AdminUserProperties.INSTANCE.getAdminCredentials();
         if(adminCredentials.getUsername().equals(credentials.getUsername())) {
-            if(adminCredentials.getPassword().equals(credentials.getPassword())) {
+            if(passwordMatches(credentials.getPassword(), adminCredentials.getPassword())) {
                 User user = new User();
                 user.setCredentials(adminCredentials);
                 return Optional.of(user);
             }
         }
         return Optional.ofNullable(null);
+    }
+
+    private boolean passwordMatches(String plaintextPassword, String encryptedPassword) {
+        StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
+        return encryptor.checkPassword(plaintextPassword, encryptedPassword);
     }
 
     public boolean createUser(User user) {
