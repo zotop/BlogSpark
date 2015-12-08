@@ -1,9 +1,12 @@
 package engine.blog.entities;
 
 
+import com.google.gson.annotations.Expose;
+
 public class Credentials {
 
     private String username;
+    @Expose(serialize = false)
     private String password;
 
     public Credentials(String username, String password) {
@@ -12,7 +15,8 @@ public class Credentials {
     }
 
     //needed by Mongojack
-    private Credentials() {}
+    private Credentials() {
+    }
 
     public String getUsername() {
         return username;

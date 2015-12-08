@@ -1,6 +1,6 @@
 package engine.blog.json;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
 /**
@@ -8,10 +8,11 @@ import spark.ResponseTransformer;
  */
 public class JsonTransformer implements ResponseTransformer {
 
-    private Gson gson = new Gson();
+    private GsonBuilder gson = new GsonBuilder();
 
     @Override
     public String render(Object model) {
-        return gson.toJson(model);
+        gson.addSerializationExclusionStrategy(new JsonSerializationExclusionStrategy());
+        return gson.create().toJson(model);
     }
 }
