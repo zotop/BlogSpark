@@ -57,7 +57,7 @@
             });
 
             var listApiCall = window.location.origin + "/api/post/list";
-            var tag = getUrlParameter("tag");
+            var tag = Util.getUrlParameter("tag");
             if(tag) {
                 listApiCall = listApiCall + "?tag=" + tag;
             }

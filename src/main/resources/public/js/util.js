@@ -1,4 +1,6 @@
-function getUrlParameter(param) {
+function Util(){}
+
+Util.getUrlParameter = function getUrlParameter(param) {
     var pageUrl = window.location.search.substring(1);
     var urlVariables = pageUrl.split('&');
     for (var i = 0; i < urlVariables.length; i++)

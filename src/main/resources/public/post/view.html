@@ -49,7 +49,7 @@
                 return new Handlebars.SafeString(formattedTags);
             });
 
-            var id = getUrlParameter("id");
+            var id = Util.getUrlParameter("id");
             $.getJSON(window.location.origin + "/api/post/view?id=" + id, function(data){
                 console.log("data", data);
                 var source = $("#post").html();
