@@ -56,7 +56,8 @@
                 }
                 var formattedTags = "";
                 for(var i = 0; i < tags.length; i++) {
-                    formattedTags = formattedTags + "<a href=''>" + tags[i] + "</a>&nbsp;"
+                    var postsByTag = window.location.origin + "/post/list.html?tag=" + tags[i];
+                    formattedTags = formattedTags + "<a href='" + postsByTag + "'>" + tags[i] + "</a>&nbsp;"
                 }
                 return new Handlebars.SafeString(formattedTags);
             });
