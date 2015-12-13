@@ -17,6 +17,7 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <script src="../js/handlebars-v4.0.5.min.js"></script>
     <script src="../js/jquery-2.1.4.min.js"></script>
+    <script src="../js/util.js"></script>
 
 
     <!-- FONT
@@ -33,20 +34,6 @@
     <link rel="icon" type="image/png" href="../images/favicon.png">
 
     <script>
-        function getUrlParameter(param) {
-            var pageUrl = window.location.search.substring(1);
-            var urlVariables = pageUrl.split('&');
-            for (var i = 0; i < urlVariables.length; i++)
-            {
-                var parameterName = urlVariables[i].split('=');
-                if (parameterName[0] == param)
-                {
-                    return parameterName[1];
-                }
-            }
-        }
-
-
 
         $(document).ready(function () {
 
