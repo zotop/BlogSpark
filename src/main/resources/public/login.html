@@ -1,4 +1,82 @@
-<html>
-<h1>Login Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>BlogSpark</title>
+    <meta name="description" content="A simple Blog">
+    <meta name="author" content="Joao Guerreiro">
+
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- JS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="./js/handlebars-v4.0.5.min.js"></script>
+    <script src="./js/jquery-2.1.4.min.js"></script>
+    <script src="./js/util.js"></script>
+
+
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/skeleton.css">
+
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+
+    <script>
+        $(document).ready(function () {
+            $("#loginButton").on("click", function() {
+                var username = $("#usernameInput").val();
+                var password = $("#passwordInput").val();
+                var jsonData = JSON.stringify({username: username, password: password});
+                var login = $.post(window.location.origin + "/api/user/login", jsonData,function(data){
+                    console.log("data", data);
+                    window.location = window.location.origin;
+                }, "json");
+                login.fail(function(data) {
+                    alert(data.responseJSON.message);
+                });
+            });
+        });
+
+
+
+    </script>
+
+</head>
+<body>
+
+<!-- Primary Page Layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container">
+    <div class="row">
+        <div class="two-thirds column">
+            <label for="usernameInput">Username</label>
+            <input type="text" placeholder="username" id="usernameInput">
+        </div>
+    </div>
+    <div class="row">
+        <div class="two-thirds column">
+            <label for="passwordInput">Password</label>
+            <input type="password" placeholder="password" id="passwordInput">
+        </div>
+    </div>
+    <div class="row">
+        <input id="loginButton" class="button-primary" type="button" value="Login">
+    </div>
+</div>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
 </html>
